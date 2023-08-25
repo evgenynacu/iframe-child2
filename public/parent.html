@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>This is test</title>
+</head>
+
+<body onload="checkCookies()">
+
+<iframe src="http://localhost:3000/" width="500px" height="500px" id="child">
+
+</iframe>
+
+<script>
+    function checkCookies() {
+        const child = document.getElementById("child")
+        addEventListener("message", event => {
+            if (event.data.jsonrpc) {
+                console.log("got", event.data, typeof event.data)
+                window.ethereum.sendAsync(event.data, (error, result) => {
+                    console.log("sending to child", JSON.stringify(result))
+                    child.contentWindow.postMessage(result, "*")
+                })
+            }
+        })
+    }
+</script>
+</body>
+</html>
